@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+        {% load static %}
+        <!-- The line above tells Django to be ready to listen for static files -->
+        <link rel="stylesheet" href="{% static 'users_app/css/style.css' %}" media="screen" title="no title"  charset="utf-8">
+        <!-- Put the static files in the static folder inside your app.  Django collects files within all static folders and puts them within a single folder -->   
+</head>
+<body>
+    <h1>Users</h1>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{user.id}}</td>
+            <td>
+                <a href="{% url 'users:my_show' id=user.id %}">{{user.firstname}} {{user.lastname}}</a>
+            </td>
+            <td>{{user.email}}</td>
+            <td>{{user.created_at}}</td>
+            <td>
+                <a href="{% url 'users:my_show' id=user.id %}">Show</a>
+                <a href="{% url 'users:my_edit' id=user.id %}">Edit</a>
+                <a href="{%url 'users:my_destroy' id=user.id %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>      
+    <a href="{% url 'users:my_new' %}">Add a new user</a>
+
+</body>
+
+</html>
