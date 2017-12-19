@@ -35,33 +35,24 @@ def destroy(request, id):
 # form methods
 
 def update(request, id):
-    errors = User.objects.validate(request.POST)
-    print errors
-    if errors:
-        for err in errors:
+    if request.method == "POST":
+        result = User.objects.validate_update(request.POST, user_id=id)
+        if type(result) == User:
+            return redirect(reverse('users:my_show', kwargs={'id':id}))
+        for err in result:
             error(request, err, 'red')        
-        return redirect(reverse('users:my_edit', kwargs={'id':id}))
-    else:
-        u = User.objects.get(id=id)
-        u.firstname = request.POST['fname']
-        u.lastname = request.POST['lname']
-        u.email = request.POST['email']
-        u.save()
-        return redirect(reverse('users:my_show', kwargs={'id':id}))
+    return redirect(reverse('users:my_edit', kwargs={'id':id}))
+    
 
 def create(request):
-    errors = User.objects.validate(request.POST)
-    if errors:
-        for err in errors:
+    result = User.objects.validate_create(request.POST)
+    if type(result) == User:
+        return redirect(reverse('users:my_index'))
+    else:
+        for err in result:
             error(request, err, 'red')
-        return redirect(reverse('users:my_new'))
-    else: 
-        User.objects.create(
-            firstname = request.POST['fname'],
-            lastname = request.POST['lname'],
-            email = request.POST['email']
-        )         
-    return redirect(reverse('users:my_index'))
+            return redirect(reverse('users:my_new'))
+    
 
 
 
